@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8a45999f74da45428f0e1d66856b103, type: 3}
+  m_Name: AssultRifle
+  m_EditorClassIdentifier: 
+  weaponName: LK 4000
+  magAmount: 45
+  fireDelay: 0.08
+  damamge: 15
+  skillDamage: 150
+  actually: 0.5
+  reloadTime: 1.5
+  fireAudioClip: {fileID: 8300000, guid: 650b5bb0406581c4d9b4fba827b816b8, type: 3}
+  reloadAudioClip: {fileID: 8300000, guid: 087c9fcec5e76d7459940d2a68bd331f, type: 3}
+  skillAudioClip: {fileID: 0}
+  impactParticle: {fileID: 1059669524233346, guid: 7bb551564a4a9a1498e0624fd34ce7d3, type: 3}
+  muzzleParticle: {fileID: 1224217824244948, guid: 291223895b5952f488a6f94886872e78, type: 3}
