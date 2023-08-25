@@ -23,7 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010208796762}
-  m_LocalRotation: {x: 0.000018364473, y: -0.0076596336, z: -0.002689772, w: 0.99996704}
+  m_LocalRotation: {x: 0.000018364475, y: -0.0076596336, z: -0.0026897723, w: 0.99996704}
   m_LocalPosition: {x: -0.03994728, y: 0, z: -0.000000038146972}
   m_LocalScale: {x: 0.9999999, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -86,7 +86,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010286205686}
-  m_LocalRotation: {x: -0.0057979566, y: -0.01729315, z: 0.22232638, w: 0.97480166}
+  m_LocalRotation: {x: -0.005797957, y: -0.01729315, z: 0.2223264, w: 0.97480166}
   m_LocalPosition: {x: -0.048493117, y: 0, z: -0.000000038146972}
   m_LocalScale: {x: 0.9999995, y: 1.0000004, z: 0.99999994}
   m_ConstrainProportionsScale: 0
@@ -172,6 +172,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4000012531979720}
   - component: {fileID: 95000013290184230}
+  - component: {fileID: 1595030587}
   m_Layer: 0
   m_Name: Monster
   m_TagString: Untagged
@@ -188,7 +189,7 @@ Transform:
   m_GameObject: {fileID: 1000010402951368}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4000011082351298}
@@ -219,6 +220,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!136 &1595030587
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010402951368}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1000010415932204
 GameObject:
   m_ObjectHideFlags: 0

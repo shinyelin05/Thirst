@@ -10,6 +10,8 @@ public class AudioManager : MonoBehaviour
 
     public void Awake()
     {
+        if (Instance != null)
+            Destroy(gameObject);
         Instance = this;
     }
 
