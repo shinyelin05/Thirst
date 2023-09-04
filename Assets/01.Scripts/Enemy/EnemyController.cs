@@ -10,10 +10,10 @@ public class EnemyController : MonoBehaviour
     float stateTimer;
 
     Vector2 idleMoveDir;
+    public PlayerController player;
 
-    PlayerController player;
-
-    float enemySpeed;
+    float enemySpeed = 3f;
+    float dist;
 
     enum EnemyState
     {
@@ -25,16 +25,15 @@ public class EnemyController : MonoBehaviour
 
     void ChangeState(EnemyState state)
     {
+        Debug.Log(state);
         stateTimer = 0;
         curState = state;
     }
 
-    private void Start()
-    {
-    }
-
     private void Update()
     {
+         
+
         stateTimer += Time.deltaTime;
         switch (curState)
         {
@@ -58,7 +57,7 @@ public class EnemyController : MonoBehaviour
 
     void IdleState()
     {
-        float dist = Vector3.Distance(transform.position, player.gameObject.transform.position);
+        dist = Vector3.Distance(transform.position, player.gameObject.transform.position);
 
         if (stateTimer > 0)
         {
@@ -76,7 +75,15 @@ public class EnemyController : MonoBehaviour
 
     void ChaseState()
     {
+        float dist = Vector3.Distance(transform.position, player.gameObject.transform.position);
+        Vector3 dir = (player.gameObject.transform.position - transform.position).normalized;
+        transform.position += dir * enemySpeed * Time.deltaTime;
+
         // 만약에 거리가 5보다 적으면 Idle로 하기.
+        if (dist > 10)
+        {
+            ChangeState(EnemyState.Idle);
+        }
     }
 
     void AttackState()
