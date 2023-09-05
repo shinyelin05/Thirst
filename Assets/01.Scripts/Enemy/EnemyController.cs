@@ -67,7 +67,7 @@ public class EnemyController : MonoBehaviour
 
         transform.position += (Vector3)idleMoveDir * Time.deltaTime * enemySpeed;
 
-        if (dist < 10)
+        if (dist < 20)
         {
             ChangeState(EnemyState.Chase);
         }
@@ -80,7 +80,7 @@ public class EnemyController : MonoBehaviour
         transform.position += dir * enemySpeed * Time.deltaTime;
 
         // 만약에 거리가 5보다 적으면 Idle로 하기.
-        if (dist > 10)
+        if (dist > 20)
         {
             ChangeState(EnemyState.Idle);
         }
