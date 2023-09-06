@@ -21,7 +21,7 @@ public class Entity : MonoBehaviour, IDamageAble
         Hp -= dmg;
         if (Hp < 0)
         {
-            Die();
+          //  Die();
         }
     }
 
