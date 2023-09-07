@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using static UnityEditor.Rendering.InspectorCurveEditor;
 
 public class EnemyController : MonoBehaviour
@@ -9,13 +10,18 @@ public class EnemyController : MonoBehaviour
     EnemyState curState;
     float stateTimer;
 
-    Vector3 idleMoveDir;
-    public PlayerController player;
-    public Animator animator;
+    [Header("적 이동 관련")]
     float enemySpeed = 2f;
-    float dist;
+    float enemyDist;
+    Vector3 idleMoveDir;
+
+    [Header("플레이어 참조")]
+    public PlayerController player;
+
+    public Animator animator;
     public Entity enemyHP;
-    bool isDieAnim = false;
+
+    private NavMeshAgent navMeshAgent;
 
     enum EnemyState
     {
@@ -28,7 +34,7 @@ public class EnemyController : MonoBehaviour
 
     void ChangeState(EnemyState state)
     {
-        Debug.Log(state);
+       // Debug.Log(state);
         enemySpeed = 2f;
         stateTimer = 0;
         curState = state;
@@ -36,7 +42,8 @@ public class EnemyController : MonoBehaviour
 
     private void Awake()
     {
-        Animator animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     private void Update()
@@ -51,7 +58,7 @@ public class EnemyController : MonoBehaviour
         {
             case EnemyState.Idle:
                 IdleState();
-              
+
                 break;
 
             case EnemyState.Trance:
@@ -67,7 +74,7 @@ public class EnemyController : MonoBehaviour
                 break;
 
             case EnemyState.Die:
-                StartCoroutine(DieState());
+                DieState();
                 //  DieState();
                 break;
         }
@@ -75,23 +82,17 @@ public class EnemyController : MonoBehaviour
 
     void IdleState()
     {
-
-        Debug.Log("IDLE");
-
-        if(stateTimer > 2)
+        if (stateTimer > 1)
         {
             ChangeState(EnemyState.Trance);
         }
-
-
     }
 
     void TranceState()
     {
-
         animator.SetBool("IsTrance", true);
 
-        dist = Vector3.Distance(transform.position, player.gameObject.transform.position);
+        enemyDist = Vector3.Distance(transform.position, player.gameObject.transform.position);
 
         if (stateTimer > 0)
         {
@@ -101,16 +102,16 @@ public class EnemyController : MonoBehaviour
             idleMoveDir.y = 0;
         }
 
-        transform.position += (Vector3)idleMoveDir * Time.deltaTime * enemySpeed;
+
+        navMeshAgent.SetDestination(transform.position += (Vector3)idleMoveDir * Time.deltaTime * enemySpeed);
 
         this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(idleMoveDir), Time.deltaTime * enemySpeed);
 
-        if ( dist < 10)
+        if (enemyDist < 10)
         {
             animator.SetBool("IsTrance", false);
             ChangeState(EnemyState.Chase);
         }
-       
     }
 
     void ChaseState()
@@ -121,10 +122,9 @@ public class EnemyController : MonoBehaviour
 
         float dist = Vector3.Distance(transform.position, player.gameObject.transform.position);
         Vector3 dir = (player.gameObject.transform.position - transform.position).normalized;
-
         dir.y = 0;
 
-        transform.position += dir * enemySpeed * Time.deltaTime;
+        navMeshAgent.SetDestination(transform.position += dir * enemySpeed * Time.deltaTime);
 
         this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * enemySpeed);
 
@@ -139,37 +139,33 @@ public class EnemyController : MonoBehaviour
             ChangeState(EnemyState.Attack);
         }
 
+
     }
 
     void AttackState()
     {
-        Debug.Log("Attack");
         animator.SetBool("IsAttack", true);
 
-      if( stateTimer >= 5f)
+        if (stateTimer >= 2f)
         {
             animator.SetBool("IsAttack", false);
             ChangeState(EnemyState.Idle);
         }
     }
 
-    IEnumerator DieState()
+    void DieState()
     {
-        if (isDieAnim)
-        {
-            StopCoroutine(DieState());
-
-        }
 
         animator.SetBool("IsRun", false);
         animator.SetBool("IsTrance", false);
 
         animator.SetTrigger("IsDie");
 
-        yield return new WaitForSeconds(1.5f);
-        Debug.Log("DIE");
-        enemyHP.Die();
-
+        if (stateTimer > 1.5)
+        {
+            Debug.Log("DIE");
+            enemyHP.Die();
+        }
 
     }
 

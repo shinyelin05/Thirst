@@ -18,8 +18,6 @@ public class PlayerController : MonoBehaviour
     public readonly int animIsGround = Animator.StringToHash("IsGround");
     #endregion
 
-    public GameObject prefab;
-
     #region Move
     [Header("Move")]
     [SerializeField] private CharacterController controller;
@@ -48,6 +46,11 @@ public class PlayerController : MonoBehaviour
     private bool isInAir;
     private float lastAimTargetDistance;
     public bool isCanShoot { get { return !isRun && isAiming && !isInAir; } }
+    #endregion
+
+    #region HP
+    private float playerHP = 10;
+    public GameManager gameManager;
     #endregion
 
     public void Start()
@@ -84,7 +87,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if(curFocusEntity != null)
+                if (curFocusEntity != null)
                     curFocusEntity.OnFocusOut?.Invoke();
 
                 curFocusEntity = null;
@@ -220,5 +223,23 @@ public class PlayerController : MonoBehaviour
         {
             animatorEventListner.listenKey = "Horizontal";
         }
+    }
+
+    private void FixedUpdate()
+    {
+        PlayerHP();
+
+    }
+    void PlayerHP()
+    {
+        if (playerHP <= 0)
+        {
+          //  Debug.Log("게임 오버");
+            gameManager.GameOver();
+            return;
+        }
+
+        gameManager.GetComponent<GameManager>().PlayerInit(this);
+        playerHP -= Time.deltaTime;
     }
 }
