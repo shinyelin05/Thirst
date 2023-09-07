@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -13,7 +14,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject gameOverPanel = null;
 
-    PlayerController player = null;
+    public PlayerController player = null;
 
     private void FixedUpdate()
     {
@@ -22,14 +23,22 @@ public class GameManager : MonoBehaviour
         timeScoreText.text = "생존 시간 : " + timeScoreValue.ToString() + "초";
     }
 
+    private void Update()
+    {
+        if(Time.timeScale == 0 && Input.GetKeyDown(KeyCode.Space))
+        {
+            ReStart();
+        }
+    }
+    void ReStart()
+    {
+        SceneManager.LoadScene("Game");
+        Time.timeScale= 1.0f;
+    }
+
     public void GameOver()
     {
         gameOverPanel.SetActive(true);
         Time.timeScale = 0;
-    }
-
-    public void PlayerInit(PlayerController onwer)
-    {
-        player = onwer;
     }
 }

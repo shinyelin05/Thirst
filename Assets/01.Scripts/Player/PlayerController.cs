@@ -49,18 +49,29 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region HP
-    private float playerHP = 10;
+    private float maxHp = 100;
+    private float playerHP;
     public GameManager gameManager;
+    public GameObject obj;
+    public MeshRenderer hpCylinder;
+    Material mat;
     #endregion
+
+    public GameObject enemyPrefab;
 
     public void Start()
     {
         cam = Camera.main;
         Cursor.lockState = CursorLockMode.Locked;
+        mat = hpCylinder.materials[0];
+        playerHP = maxHp;
+        enemyPrefab.GetComponent<EnemyController>().PlayerInit(this);
     }
 
     public void Update()
     {
+        mat.SetFloat("_Dissolve", playerHP / maxHp);
+
         Aiming();
         Move();
         Rotate();
@@ -229,17 +240,19 @@ public class PlayerController : MonoBehaviour
     {
         PlayerHP();
 
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            obj.GetComponent<Renderer>().material.SetFloat("Dissolve", 0.5f);
+        }
     }
     void PlayerHP()
     {
         if (playerHP <= 0)
         {
-          //  Debug.Log("게임 오버");
-            gameManager.GameOver();
+            //  Debug.Log("게임 오버");
+            // gameManager.GameOver();
             return;
         }
-
-        gameManager.GetComponent<GameManager>().PlayerInit(this);
-        playerHP -= Time.deltaTime;
+        playerHP -= Time.deltaTime * 3; 
     }
 }

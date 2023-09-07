@@ -9,19 +9,21 @@ public class EnemyController : MonoBehaviour
     [Header("적 스테이트 관련")]
     EnemyState curState;
     float stateTimer;
+    bool isDie;
 
     [Header("적 이동 관련")]
     float enemySpeed = 2f;
     float enemyDist;
     Vector3 idleMoveDir;
-
-    [Header("플레이어 참조")]
-    public PlayerController player;
-
+    private NavMeshAgent navMeshAgent;
     public Animator animator;
+
+    [Header("적 체력")]
     public Entity enemyHP;
 
-    private NavMeshAgent navMeshAgent;
+    [Header("플레이어 참조")]
+    private PlayerController player;
+
 
     enum EnemyState
     {
@@ -58,7 +60,6 @@ public class EnemyController : MonoBehaviour
         {
             case EnemyState.Idle:
                 IdleState();
-
                 break;
 
             case EnemyState.Trance:
@@ -75,7 +76,6 @@ public class EnemyController : MonoBehaviour
 
             case EnemyState.Die:
                 DieState();
-                //  DieState();
                 break;
         }
     }
@@ -137,16 +137,14 @@ public class EnemyController : MonoBehaviour
         {
             animator.SetBool("IsRun", false);
             ChangeState(EnemyState.Attack);
-        }
-
-
+        }   
     }
 
     void AttackState()
     {
         animator.SetBool("IsAttack", true);
 
-        if (stateTimer >= 2f)
+        if (stateTimer >= 3f)
         {
             animator.SetBool("IsAttack", false);
             ChangeState(EnemyState.Idle);
@@ -155,21 +153,16 @@ public class EnemyController : MonoBehaviour
 
     void DieState()
     {
-
         animator.SetBool("IsRun", false);
         animator.SetBool("IsTrance", false);
-
-        animator.SetTrigger("IsDie");
-
-        if (stateTimer > 1.5)
+        if (!isDie)
         {
-            Debug.Log("DIE");
-            enemyHP.Die();
+            animator.SetTrigger("IsDie");
+            isDie = true;
         }
-
     }
 
-    public void EnemyInit(PlayerController owner)
+    public void PlayerInit(PlayerController owner)
     {
         player = owner;
     }

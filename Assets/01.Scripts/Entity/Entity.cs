@@ -21,12 +21,7 @@ public class Entity : MonoBehaviour, IDamageAble
         Hp -= dmg;
         if (Hp < 0)
         {
-          //  Die();
+            Destroy(gameObject, 2.5f);
         }
-    }
-
-    public virtual void Die()
-    {
-        Destroy(gameObject);
     }
 }
