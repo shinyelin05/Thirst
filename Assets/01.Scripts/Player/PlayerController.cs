@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     public GameObject enemyPrefab;
+    public bool isDamage = false;
 
     public void Start()
     {
@@ -72,10 +73,13 @@ public class PlayerController : MonoBehaviour
     {
         mat.SetFloat("_Dissolve", playerHP / maxHp);
 
-        Aiming();
-        Move();
-        Rotate();
+        if(!isDamage)
+        {
         Animate();
+        Aiming();
+        Rotate();
+        Move();
+        }
     }
 
     private void Aiming()
@@ -253,6 +257,11 @@ public class PlayerController : MonoBehaviour
             // gameManager.GameOver();
             return;
         }
-        playerHP -= Time.deltaTime * 3; 
+       PlayerDamage(Time.deltaTime*3); 
+    }
+
+    public void PlayerDamage(float damage)
+    {
+        playerHP -= damage;
     }
 }

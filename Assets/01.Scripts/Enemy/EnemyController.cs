@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Rendering.InspectorCurveEditor;
 
 public class EnemyController : MonoBehaviour
 {
@@ -22,7 +21,7 @@ public class EnemyController : MonoBehaviour
     public Entity enemyHP;
 
     [Header("플레이어 참조")]
-    private PlayerController player;
+    static PlayerController player;
 
 
     enum EnemyState
@@ -36,7 +35,7 @@ public class EnemyController : MonoBehaviour
 
     void ChangeState(EnemyState state)
     {
-       // Debug.Log(state);
+        // Debug.Log(state);
         enemySpeed = 2f;
         stateTimer = 0;
         curState = state;
@@ -137,17 +136,21 @@ public class EnemyController : MonoBehaviour
         {
             animator.SetBool("IsRun", false);
             ChangeState(EnemyState.Attack);
-        }   
+        }
     }
 
     void AttackState()
     {
         animator.SetBool("IsAttack", true);
+        player.PlayerDamage(10f);
+      //  player.isDamage = true;
 
-        if (stateTimer >= 3f)
+         if (stateTimer >= 2f)
         {
-            animator.SetBool("IsAttack", false);
             ChangeState(EnemyState.Idle);
+            animator.SetBool("IsAttack", false);
+          //  player.isDamage = false;
+
         }
     }
 
