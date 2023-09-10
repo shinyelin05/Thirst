@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -52,6 +50,11 @@ public class EnemyController : MonoBehaviour
         if (enemyHP.Hp <= 0)
         {
             curState = EnemyState.Die;
+        }
+
+        if (player.isDamage == true)
+        {
+            Debug.Log("Damage");
         }
 
         stateTimer += Time.deltaTime;
@@ -123,7 +126,7 @@ public class EnemyController : MonoBehaviour
         Vector3 dir = (player.gameObject.transform.position - transform.position).normalized;
         dir.y = 0;
 
-        navMeshAgent.SetDestination(transform.position += dir * enemySpeed * Time.deltaTime);
+        navMeshAgent.SetDestination(player.transform.position);
 
         this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * enemySpeed);
 
@@ -143,13 +146,14 @@ public class EnemyController : MonoBehaviour
     {
         animator.SetBool("IsAttack", true);
         player.PlayerDamage(10f);
-      //  player.isDamage = true;
+        player.isDamage = true;
+     
 
-         if (stateTimer >= 2f)
+        if (stateTimer >= 2f)
         {
             ChangeState(EnemyState.Idle);
             animator.SetBool("IsAttack", false);
-          //  player.isDamage = false;
+            player.isDamage = false;
 
         }
     }
