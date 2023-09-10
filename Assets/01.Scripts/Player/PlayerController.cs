@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -55,6 +56,7 @@ public class PlayerController : MonoBehaviour
     public GameObject obj;
     public MeshRenderer hpCylinder;
     Material mat;
+    public Slider playerHpSlider;
     #endregion
 
     public GameObject enemyPrefab;
@@ -73,13 +75,15 @@ public class PlayerController : MonoBehaviour
     {
         mat.SetFloat("_Dissolve", playerHP / maxHp);
 
-        if(!isDamage)
-        {
+        //if(isDamage)
+        //{
+        //    return;
+        //}
+
         Animate();
         Aiming();
         Rotate();
         Move();
-        }
     }
 
     private void Aiming()
@@ -228,6 +232,7 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetFloat(animMoveX, Input.GetAxis("Horizontal"));
         animator.SetFloat(animMoveY, Input.GetAxis("Vertical"));
+
         animator.SetFloat(animSpeed, Mathf.Lerp(animator.GetFloat(animSpeed), Input.GetKey(KeyCode.LeftShift) ? 2 : 1, Time.deltaTime * 4));
 
         if (moveDir.x == 0 && moveDir.y != 0)
@@ -243,25 +248,21 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         PlayerHP();
-
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            obj.GetComponent<Renderer>().material.SetFloat("Dissolve", 0.5f);
-        }
     }
+
     void PlayerHP()
     {
         if (playerHP <= 0)
         {
-            //  Debug.Log("게임 오버");
-            // gameManager.GameOver();
+            //  gameManager.GameOver();
             return;
         }
-       PlayerDamage(Time.deltaTime*3); 
+        PlayerDamage(Time.deltaTime * 1.5f);
     }
 
     public void PlayerDamage(float damage)
     {
         playerHP -= damage;
+        playerHpSlider.value = playerHP / 100;
     }
 }

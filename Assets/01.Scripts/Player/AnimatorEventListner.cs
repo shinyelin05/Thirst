@@ -10,7 +10,7 @@ public class AnimatorEventListner : MonoBehaviour
     {
         if(listenKey == key)
         {
-            //Debug.Log("¹ß¼Ò¸® " + key);
+
         }
     }
 }

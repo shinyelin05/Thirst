@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.PostProcessing;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : Entity
 {
     [Header("적 스테이트 관련")]
     EnemyState curState;
@@ -17,10 +18,12 @@ public class EnemyController : MonoBehaviour
 
     [Header("적 체력")]
     public Entity enemyHP;
+    public GameObject enemyHPSlider;
+  //  public Volume volume; // Post-Processing Volume
+    private Vignette vignette; // Vignette Effect
 
     [Header("플레이어 참조")]
     static PlayerController player;
-
 
     enum EnemyState
     {
@@ -33,14 +36,15 @@ public class EnemyController : MonoBehaviour
 
     void ChangeState(EnemyState state)
     {
-        // Debug.Log(state);
         enemySpeed = 2f;
         stateTimer = 0;
         curState = state;
     }
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -50,11 +54,6 @@ public class EnemyController : MonoBehaviour
         if (enemyHP.Hp <= 0)
         {
             curState = EnemyState.Die;
-        }
-
-        if (player.isDamage == true)
-        {
-            Debug.Log("Damage");
         }
 
         stateTimer += Time.deltaTime;
@@ -104,7 +103,6 @@ public class EnemyController : MonoBehaviour
             idleMoveDir.y = 0;
         }
 
-
         navMeshAgent.SetDestination(transform.position += (Vector3)idleMoveDir * Time.deltaTime * enemySpeed);
 
         this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(idleMoveDir), Time.deltaTime * enemySpeed);
@@ -128,13 +126,15 @@ public class EnemyController : MonoBehaviour
 
         navMeshAgent.SetDestination(player.transform.position);
 
-        this.transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * enemySpeed);
+        this.transform.rotation = Quaternion.Lerp(this.transform.rotation,
+            Quaternion.LookRotation(dir), Time.deltaTime * enemySpeed);
 
         if (dist >= 10)
         {
             animator.SetBool("IsRun", false);
             ChangeState(EnemyState.Trance);
         }
+
         else if (dist < 1)
         {
             animator.SetBool("IsRun", false);
@@ -145,16 +145,14 @@ public class EnemyController : MonoBehaviour
     void AttackState()
     {
         animator.SetBool("IsAttack", true);
-        player.PlayerDamage(10f);
+        player.PlayerDamage(0.1f);
         player.isDamage = true;
-     
 
         if (stateTimer >= 2f)
         {
             ChangeState(EnemyState.Idle);
             animator.SetBool("IsAttack", false);
             player.isDamage = false;
-
         }
     }
 
@@ -162,11 +160,23 @@ public class EnemyController : MonoBehaviour
     {
         animator.SetBool("IsRun", false);
         animator.SetBool("IsTrance", false);
+
+        Destroy(enemyHPSlider);
+
         if (!isDie)
         {
             animator.SetTrigger("IsDie");
             isDie = true;
         }
+    }
+
+    public override void Damage(float dmg)
+    {
+        Debug.Log("Damage");
+        base.Damage(dmg);
+
+
+        animator.SetBool("IsGetHit", true);
     }
 
     public void PlayerInit(PlayerController owner)
