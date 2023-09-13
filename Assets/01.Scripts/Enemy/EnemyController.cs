@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Rendering;
 
 public class EnemyController : Entity
 {
@@ -16,11 +16,15 @@ public class EnemyController : Entity
     private NavMeshAgent navMeshAgent;
     public Animator animator;
 
+    RaycastHit hit;
+    float maxDistance = 15f;
+
+
     [Header("적 체력")]
     public Entity enemyHP;
     public GameObject enemyHPSlider;
-  //  public Volume volume; // Post-Processing Volume
-    private Vignette vignette; // Vignette Effect
+    public Volume volume;
+    bool isDamaged = false;
 
     [Header("플레이어 참조")]
     static PlayerController player;
@@ -31,6 +35,7 @@ public class EnemyController : Entity
         Trance,
         Chase,
         Attack,
+        Hit,
         Die,
     }
 
@@ -51,9 +56,33 @@ public class EnemyController : Entity
 
     private void Update()
     {
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Debug.DrawRay(transform.position, transform.forward * maxDistance, Color.blue, 0.3f);
+            if (Physics.Raycast(transform.position, transform.forward, out hit, maxDistance))
+            {
+                if(hit.collider == null)
+                {
+                    return;
+                }
+                 if(hit.collider.CompareTag("STONE"))
+                {
+                Debug.Log(hit.collider.name + "돌!!!!!!!!!!!!!!!!!!!!!!!");
+                   
+                }
+            }
+
+        }
+
         if (enemyHP.Hp <= 0)
         {
             curState = EnemyState.Die;
+        }
+
+        if (isDamaged)
+        {
+            ChangeState(EnemyState.Hit);
         }
 
         stateTimer += Time.deltaTime;
@@ -73,6 +102,10 @@ public class EnemyController : Entity
 
             case EnemyState.Attack:
                 AttackState();
+                break;
+
+            case EnemyState.Hit:
+                HitState();
                 break;
 
             case EnemyState.Die:
@@ -129,6 +162,8 @@ public class EnemyController : Entity
         this.transform.rotation = Quaternion.Lerp(this.transform.rotation,
             Quaternion.LookRotation(dir), Time.deltaTime * enemySpeed);
 
+
+
         if (dist >= 10)
         {
             animator.SetBool("IsRun", false);
@@ -140,6 +175,8 @@ public class EnemyController : Entity
             animator.SetBool("IsRun", false);
             ChangeState(EnemyState.Attack);
         }
+
+
     }
 
     void AttackState()
@@ -170,17 +207,31 @@ public class EnemyController : Entity
         }
     }
 
+    void HitState()
+    {
+
+        animator.SetBool("IsRun", false);
+        animator.SetBool("IsGetHit", true);
+
+        if (stateTimer > 1)
+        {
+            //  ChangeState(EnemyState.Idle);
+            //   animator.SetBool("IsGetHit", false);
+        }
+    }
+
     public override void Damage(float dmg)
     {
-        Debug.Log("Damage");
         base.Damage(dmg);
+        isDamaged = true;
 
-
-        animator.SetBool("IsGetHit", true);
+        ChangeState(EnemyState.Hit);
+        volume.weight = 0.0f;
     }
 
     public void PlayerInit(PlayerController owner)
     {
         player = owner;
+
     }
 }
