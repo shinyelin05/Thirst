@@ -75,10 +75,6 @@ public class PlayerController : MonoBehaviour
     {
         mat.SetFloat("_Dissolve", playerHP / maxHp);
 
-        //if(isDamage)
-        //{
-        //    return;
-        //}
 
         Animate();
         Aiming();

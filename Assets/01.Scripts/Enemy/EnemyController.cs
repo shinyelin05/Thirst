@@ -41,6 +41,7 @@ public class EnemyController : Entity
 
     void ChangeState(EnemyState state)
     {
+        Debug.Log("Change :" + state);
         enemySpeed = 2f;
         stateTimer = 0;
         curState = state;
@@ -62,14 +63,14 @@ public class EnemyController : Entity
             Debug.DrawRay(transform.position, transform.forward * maxDistance, Color.blue, 0.3f);
             if (Physics.Raycast(transform.position, transform.forward, out hit, maxDistance))
             {
-                if(hit.collider == null)
+                if (hit.collider == null)
                 {
                     return;
                 }
-                 if(hit.collider.CompareTag("STONE"))
+                if (hit.collider.CompareTag("STONE"))
                 {
-                Debug.Log(hit.collider.name + "µ¹!!!!!!!!!!!!!!!!!!!!!!!");
-                   
+                    Debug.Log(hit.collider.name + "µ¹!!!!!!!!!!!!!!!!!!!!!!!");
+
                 }
             }
 
@@ -77,6 +78,7 @@ public class EnemyController : Entity
 
         if (enemyHP.Hp <= 0)
         {
+
             curState = EnemyState.Die;
         }
 
@@ -162,8 +164,6 @@ public class EnemyController : Entity
         this.transform.rotation = Quaternion.Lerp(this.transform.rotation,
             Quaternion.LookRotation(dir), Time.deltaTime * enemySpeed);
 
-
-
         if (dist >= 10)
         {
             animator.SetBool("IsRun", false);
@@ -175,8 +175,6 @@ public class EnemyController : Entity
             animator.SetBool("IsRun", false);
             ChangeState(EnemyState.Attack);
         }
-
-
     }
 
     void AttackState()
@@ -215,13 +213,14 @@ public class EnemyController : Entity
 
         if (stateTimer > 1)
         {
-            //  ChangeState(EnemyState.Idle);
-            //   animator.SetBool("IsGetHit", false);
+            ChangeState(EnemyState.Idle);
+            animator.SetBool("IsGetHit", false);
         }
     }
 
     public override void Damage(float dmg)
     {
+        Debug.Log("Damage");
         base.Damage(dmg);
         isDamaged = true;
 
